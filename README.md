@@ -20,9 +20,13 @@
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
+- [Data Files](#data-files)
 - [Features Breakdown](#features-breakdown)
 - [API Documentation](#api-documentation)
 - [Development](#development)
+- [Deployment](#deployment)
+- [Workspace Directory](#workspace-directory)
+- [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -131,6 +135,55 @@ DriveWise follows a modern full-stack architecture with three main components:
   - SQLite for historical data and ML training
   - Redis for real-time caching and pub/sub
 - **ML Components**: Weather prediction and demand forecasting
+
+#### Database Models (SQLAlchemy)
+The backend uses 7 main database models:
+
+1. **Driver**: Driver registration and city assignment
+2. **DriverPreferences**: Working hours and schedule preferences
+3. **DriverStateHistory**: Historical tracking of driver status changes
+4. **DrivingSession**: Active and completed driving sessions
+5. **CompletedTrip**: Finished trips with earnings and metrics
+6. **TripRequestHistory**: Historical trip request data
+7. **WeatherHistory**: Weather patterns by city
+8. **SurgeHistory**: Surge pricing historical data
+
+#### Service Layer Architecture
+The backend follows a clean architecture pattern:
+
+```python
+# Service Layer (service.py - 870+ lines)
+- DataService: Business logic for all operations
+  - Driver management (register, update, get info)
+  - Location tracking (coordinates, state history)
+  - Trip management (requests, completed trips)
+  - Working hours & preferences
+  - Optimal time & zone calculations
+  - Session management (start/stop driving)
+
+# Compute Layer (compute module)
+- ComputeService: ML and optimization logic
+  - Optimal time computation
+  - Zone score calculations
+  - Best zone recommendations
+  - All time/zone score generation
+
+# Database Layer (database module)
+- DatabaseManager: Data persistence
+  - SQLite async operations
+  - Redis caching and pub/sub
+  - Connection pooling
+  - Session management
+```
+
+#### API Endpoints Structure
+All endpoints follow RESTful conventions with `/api/v1` prefix:
+- **Drivers**: CRUD operations and driver management
+- **Location**: Real-time coordinate updates
+- **Working Hours**: Schedule management
+- **Optimization**: Time and zone recommendations
+- **Trips**: Trip request and completion tracking
+- **Data Updates**: Weather and surge pricing updates
 
 ### Data Flow
 1. **User Interaction**: Driver interacts with React UI
@@ -356,49 +409,107 @@ DriveWise_Hackathon-JunctionX/
 ├── src/                          # Frontend source code
 │   ├── ai/                       # AI integration with Google Genkit
 │   │   ├── flows/                # AI flows (chat, etc.)
+│   │   │   └── chat.ts           # Chat flow implementation
 │   │   ├── dev.ts                # Development configuration
 │   │   └── genkit.ts             # Genkit setup
 │   ├── app/                      # Next.js app directory
 │   │   ├── api/                  # API routes
+│   │   │   └── optimize/         # Optimization API routes
+│   │   │       └── route.ts      # Route optimization endpoint
 │   │   ├── chatbot/              # Chatbot page
+│   │   │   └── page.tsx          # AI chatbot interface
 │   │   ├── dashboard/            # Dashboard page
+│   │   │   └── page.tsx          # Main dashboard view
 │   │   ├── driving/              # Driving assistant page
+│   │   │   └── page.tsx          # Real-time driving guidance
+│   │   ├── availabilities/       # Availability management page
+│   │   │   └── page.tsx          # Driver availability settings
 │   │   ├── welcome/              # Welcome page
+│   │   │   └── page.tsx          # Landing/welcome screen
 │   │   ├── components/           # React components
 │   │   │   └── dashboard/        # Dashboard-specific components
+│   │   │       ├── daily-highlights.tsx    # Best day display
+│   │   │       ├── driver-status.tsx       # Online/offline status
+│   │   │       ├── header.tsx              # Dashboard header
+│   │   │       ├── incentive-tracker.tsx   # Bonus progress tracker
+│   │   │       ├── schedule-drive.tsx      # Scheduling component
+│   │   │       ├── settings-dialog.tsx     # Settings modal
+│   │   │       ├── weekly-summary.tsx      # Week statistics
+│   │   │       └── wellness-nudge.tsx      # Break reminder
 │   │   ├── contexts/             # React Context providers
+│   │   │   ├── driver-status-context.tsx   # Driver state management
+│   │   │   └── settings-context.tsx        # App settings management
 │   │   ├── lib/                  # Utility functions and data
-│   │   ├── layout.tsx            # Root layout
+│   │   │   └── data.ts           # Mock data for testing
+│   │   ├── layout.tsx            # Root layout with providers
 │   │   ├── page.tsx              # Root page (redirects to welcome)
 │   │   └── globals.css           # Global styles
 │   ├── components/               # Reusable UI components
-│   │   └── ui/                   # shadcn/ui components
+│   │   └── ui/                   # shadcn/ui components (40+ components)
+│   │       ├── button.tsx        # Button component
+│   │       ├── card.tsx          # Card component
+│   │       ├── dialog.tsx        # Modal dialog
+│   │       ├── sidebar.tsx       # Navigation sidebar
+│   │       └── ...               # Many more UI components
 │   ├── hooks/                    # Custom React hooks
+│   │   ├── use-mobile.tsx        # Mobile detection hook
+│   │   └── use-toast.ts          # Toast notification hook
 │   ├── lib/                      # Shared utilities
-│   └── server/                   # Server-side utilities
+│   │   ├── utils.ts              # Utility functions
+│   │   ├── placeholder-images.ts # Image placeholder logic
+│   │   └── placeholder-images.json # Image data
+│   └── server/                   # Server-side Python utilities
+│       ├── graph_builder.py      # Mobility graph for server
+│       └── weather_predictor.py  # Weather prediction for server
 │
 ├── Algo_best_location/           # Backend Python code
 │   ├── main.py                   # FastAPI application entry point
-│   ├── service.py                # Business logic layer
-│   ├── models.py                 # SQLAlchemy models
+│   ├── service.py                # Business logic layer (870+ lines)
+│   ├── models.py                 # SQLAlchemy models (7 tables)
 │   ├── graph_builder.py          # Mobility graph construction
-│   ├── dynamic_programming_optimizer.py  # Route optimization algorithm
+│   ├── dynamic_programming_optimizer.py  # DP algorithm (700+ lines)
 │   ├── weather_predictor.py      # Weather prediction ML
 │   ├── dp_cli.py                 # Command-line interface for DP
-│   ├── endpoints 2.py            # API endpoints (alternative)
-│   └── Data/                     # Data files
+│   ├── endpoints 2.py            # Alternative API endpoints implementation
+│   └── Data/                     # Training and mock data
+│       ├── README.csv            # Data documentation
+│       ├── uber.db               # SQLite database
+│       ├── ride_trips.csv        # Historical ride data
+│       ├── ride_trips_with_clusters.csv  # Clustered trip data
+│       ├── surge_by_hour.csv     # Surge pricing patterns
+│       ├── weather_daily.csv     # Weather history
+│       ├── earnings_daily.csv    # Daily earnings data
+│       ├── earners.csv           # Driver profiles
+│       ├── riders.csv            # Rider information
+│       ├── customers.csv         # Customer data
+│       ├── incentives_weekly.csv # Incentive programs
+│       ├── cancellation_rates.csv # Trip cancellation stats
+│       ├── heatmap.csv           # Demand heatmap data
+│       ├── eats_orders.csv       # Uber Eats orders
+│       ├── merchants.csv         # Restaurant partners
+│       └── jobs_like.csv         # Job preferences
 │
 ├── docs/                         # Documentation
-│   └── blueprint.md              # Project blueprint
+│   └── blueprint.md              # Project blueprint and design specs
 │
-├── workspace/                    # Additional workspace files
+├── workspace/                    # Alternative implementations/experiments
+│   ├── next.config.ts            # Alternate Next.js config
+│   └── src/                      # Alternative source code versions
+│       ├── app/                  # Different app structure experiments
+│       └── server/               # Alternative server implementations
 │
-├── package.json                  # Node.js dependencies
+├── package.json                  # Node.js dependencies and scripts
+├── package-lock.json             # Locked dependency versions
 ├── requirements.txt              # Python dependencies
 ├── next.config.ts                # Next.js configuration
 ├── tsconfig.json                 # TypeScript configuration
 ├── tailwind.config.ts            # Tailwind CSS configuration
-├── components.json               # UI components configuration
+├── postcss.config.mjs            # PostCSS configuration
+├── components.json               # shadcn/ui components configuration
+├── apphosting.yaml               # Firebase App Hosting config
+├── create_archive.sh             # Deployment archive script
+├── uber_hackathon_v2_mock_data.xlsx  # Original mock data spreadsheet
+├── .gitignore                    # Git ignore patterns
 ├── .env                          # Environment variables (create this)
 └── README.md                     # This file
 ```
@@ -409,9 +520,105 @@ DriveWise_Hackathon-JunctionX/
 - **`src/app/`**: Next.js App Router pages and layouts
 - **`src/components/`**: Reusable React components built with Radix UI
 - **`Algo_best_location/`**: Python backend with FastAPI and optimization algorithms
+- **`Algo_best_location/Data/`**: Training data and mock datasets for the ML models
 - **`docs/`**: Project documentation and design specifications
+- **`workspace/`**: Experimental and alternative implementations
+
+## 📊 Data Files
+
+The `Algo_best_location/Data/` directory contains comprehensive datasets used for training the optimization algorithms and simulating real-world scenarios:
+
+### Core Data Files
+
+| File | Description | Records | Purpose |
+|------|-------------|---------|---------|
+| **uber.db** | SQLite database | Multiple tables | Central database for all historical data |
+| **ride_trips.csv** | Historical ride data | ~10,000+ | Trip patterns, pickup/dropoff locations, durations |
+| **ride_trips_with_clusters.csv** | Clustered trip data | ~10,000+ | Trips grouped into hexagonal zones for analysis |
+| **surge_by_hour.csv** | Surge pricing patterns | 168 (24h × 7d) | Hourly surge multipliers by zone |
+| **weather_daily.csv** | Weather history | 365+ days | Daily weather conditions and temperature |
+| **earnings_daily.csv** | Daily earnings data | Multiple drivers | Historical driver earnings and trip counts |
+
+### Driver & Customer Data
+
+| File | Description | Purpose |
+|------|-------------|---------|
+| **earners.csv** | Driver profiles | Driver demographics and preferences |
+| **riders.csv** | Rider information | Customer ride history and patterns |
+| **customers.csv** | Customer data | Extended customer profiles |
+
+### Business Intelligence Data
+
+| File | Description | Purpose |
+|------|-------------|---------|
+| **incentives_weekly.csv** | Incentive programs | Weekly bonus structures and requirements |
+| **cancellation_rates.csv** | Trip cancellation statistics | Cancellation patterns by zone and time |
+| **heatmap.csv** | Demand heatmap data | Visual demand intensity across city zones |
+
+### Uber Eats Data (Extended Features)
+
+| File | Description | Purpose |
+|------|-------------|---------|
+| **eats_orders.csv** | Uber Eats orders | Food delivery patterns |
+| **merchants.csv** | Restaurant partners | Restaurant locations and ratings |
+| **jobs_like.csv** | Job preferences | Driver delivery preferences |
+
+### Data Format Notes
+
+- **Coordinates**: All location data uses latitude/longitude (WGS84)
+- **Hexagonal Zones**: Cities divided using H3 spatial indexing
+- **Time Format**: ISO 8601 format (YYYY-MM-DD HH:MM:SS)
+- **Currency**: All monetary values in USD unless specified
+- **Distance**: Measured in kilometers
+
+### Data Sources
+
+The data is synthetic and generated for the hackathon, based on realistic patterns from:
+- Historical Uber trip patterns
+- Public transportation datasets
+- Weather APIs simulation
+- Realistic surge pricing models
+
+**Note**: This is mock data for demonstration purposes only. No real user data is included.
 
 ## 🎨 Features Breakdown
+
+### Dynamic Programming Optimization Algorithm
+
+The core of DriveWise's zone recommendation system is a sophisticated dynamic programming algorithm that computes optimal earning strategies:
+
+#### Algorithm Overview
+- **Input**: Driver's location, available working hours, current time
+- **Output**: Best zones to drive with expected earnings and trip probability
+- **Method**: Backward induction dynamic programming on city-hour mobility graphs
+
+#### Key Components
+1. **City-Hour Mobility Graph**
+   - Nodes represent pickup/dropoff clusters (hexagonal zones)
+   - Edges store hourly statistics (trip counts, average fares, durations)
+   - Separate graphs for each hour of the day
+
+2. **State Space**
+   - State: `(cluster_id, hour, remaining_hours)`
+   - Value function: `V(c, h, L)` = expected earnings starting at cluster c, hour h, with L hours remaining
+
+3. **Optimization Criteria**
+   - Maximize expected earnings over work session
+   - Account for travel time between zones
+   - Consider surge pricing multipliers
+   - Factor in weather conditions
+   - Balance trip frequency vs. trip profitability
+
+4. **Performance Optimizations**
+   - Graph serialization and caching
+   - Redis memoization for repeated queries
+   - Singleton pattern to prevent graph rebuilding
+   - Transition probability pre-computation
+
+#### Algorithm Complexity
+- **Time Complexity**: O(C² × H × L) where C = clusters, H = hours, L = work duration
+- **Space Complexity**: O(C × H × L)
+- **Typical Runtime**: < 1 second for 24-hour optimization
 
 ### Dashboard Features
 
@@ -591,6 +798,185 @@ npm run lint
 pip install black
 black Algo_best_location/
 ```
+
+## 🚀 Deployment
+
+### Firebase App Hosting
+
+The project includes Firebase App Hosting configuration (`apphosting.yaml`) for deployment:
+
+```yaml
+# Configuration already set up for:
+- Next.js frontend hosting
+- Environment variable management
+- Build optimization
+```
+
+### Deployment Steps
+
+1. **Build the Frontend**
+   ```bash
+   npm run build
+   ```
+
+2. **Prepare Backend**
+   ```bash
+   cd Algo_best_location
+   # Ensure all dependencies are in requirements.txt
+   pip freeze > requirements.txt
+   ```
+
+3. **Deploy to Firebase**
+   ```bash
+   firebase deploy --only hosting
+   ```
+
+4. **Deploy Backend API**
+   - Use Cloud Run, Heroku, or your preferred Python hosting
+   - Set environment variables (Redis URL, API keys, etc.)
+   - Ensure SQLite is replaced with PostgreSQL for production
+
+### Production Considerations
+
+- **Database**: Replace SQLite with PostgreSQL or Cloud SQL
+- **Redis**: Use Redis Cloud or Cloud Memorystore
+- **Environment Variables**: Secure all API keys and secrets
+- **CORS**: Update allowed origins in `main.py`
+- **Rate Limiting**: Add API rate limiting for production
+- **Monitoring**: Implement logging and error tracking
+- **Caching**: Configure Redis TTL for production workloads
+
+### Archive Creation
+
+The project includes a script for creating deployment archives:
+
+```bash
+./create_archive.sh
+```
+
+This creates a packaged version of the application for deployment.
+
+## 📂 Workspace Directory
+
+The `workspace/` directory contains experimental and alternative implementations:
+
+- **Purpose**: Testing different approaches and configurations
+- **Contents**: Alternative Next.js configs and component variations
+- **Status**: Experimental - not used in production build
+- **Note**: Can be safely ignored when running the main application
+
+This directory is useful for:
+- Trying new features without affecting main codebase
+- A/B testing different UI approaches
+- Exploring alternative backend implementations
+- Keeping old versions for reference
+
+## 🔍 Troubleshooting
+
+### Common Issues and Solutions
+
+#### Frontend Issues
+
+**Issue**: `Module not found` errors
+```bash
+# Solution: Reinstall dependencies
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Issue**: Port 9003 already in use
+```bash
+# Solution: Change port in package.json or kill existing process
+lsof -ti:9003 | xargs kill -9
+# Or run on different port:
+npm run dev -- -p 9004
+```
+
+**Issue**: TypeScript errors after installing dependencies
+```bash
+# Solution: Clear TypeScript cache and rebuild
+rm -rf .next tsconfig.tsbuildinfo
+npm run typecheck
+```
+
+#### Backend Issues
+
+**Issue**: `ModuleNotFoundError: No module named 'app'`
+```bash
+# Solution: The backend expects an 'app' package structure
+# Make sure you're running from the correct directory
+cd Algo_best_location
+python -m uvicorn main:app --reload
+```
+
+**Issue**: Redis connection errors
+```bash
+# Solution: Make sure Redis is running
+redis-cli ping  # Should return "PONG"
+# Or start Redis:
+redis-server
+```
+
+**Issue**: SQLite database locked
+```bash
+# Solution: Close all connections and restart
+# The app will create a new database if needed
+rm -f drivewise.db
+# Restart the backend
+```
+
+#### API Issues
+
+**Issue**: CORS errors when calling backend from frontend
+```bash
+# Solution: Check CORS settings in main.py
+# Make sure your frontend URL is in allow_origins list
+# For development, "*" allows all origins
+```
+
+**Issue**: Google Gemini API errors
+```bash
+# Solution: Verify your API key
+# Check .env file has correct GOOGLE_GENAI_API_KEY
+# Verify key is active at https://makersuite.google.com/app/apikey
+```
+
+### Performance Issues
+
+**Issue**: Slow optimization calculations
+- **Cause**: Graph needs to be built/cached
+- **Solution**: First request may be slow; subsequent requests use cache
+- **Tip**: Pre-warm cache by calling optimization endpoints on startup
+
+**Issue**: High memory usage
+- **Cause**: Large NetworkX graphs in memory
+- **Solution**: Increase available memory or reduce graph size
+- **Tip**: Use graph serialization to disk for large cities
+
+### Debug Mode
+
+Enable debug logging for troubleshooting:
+
+**Frontend:**
+```bash
+# Check browser console for detailed errors
+# Open DevTools (F12) and check Console and Network tabs
+```
+
+**Backend:**
+```bash
+# Run with debug logging
+cd Algo_best_location
+uvicorn main:app --reload --log-level debug
+```
+
+### Getting Help
+
+If you encounter issues not covered here:
+1. Check the [Issues](https://github.com/YannickSerrien/DriveWise_Hackathon-JunctionX/issues) on GitHub
+2. Review the FastAPI docs at http://localhost:8000/docs when backend is running
+3. Check the console output for error messages
+4. Verify all prerequisites are installed correctly
 
 ## 🤝 Contributing
 
