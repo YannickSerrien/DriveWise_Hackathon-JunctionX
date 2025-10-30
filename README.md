@@ -137,7 +137,7 @@ DriveWise follows a modern full-stack architecture with three main components:
 - **ML Components**: Weather prediction and demand forecasting
 
 #### Database Models (SQLAlchemy)
-The backend uses 7 main database models:
+The backend uses 8 database models for comprehensive data management:
 
 1. **Driver**: Driver registration and city assignment
 2. **DriverPreferences**: Working hours and schedule preferences
@@ -151,9 +151,8 @@ The backend uses 7 main database models:
 #### Service Layer Architecture
 The backend follows a clean architecture pattern:
 
-```python
-# Service Layer (service.py - 870+ lines)
-- DataService: Business logic for all operations
+**Service Layer** (`service.py` - 870+ lines)
+- **DataService**: Business logic for all operations
   - Driver management (register, update, get info)
   - Location tracking (coordinates, state history)
   - Trip management (requests, completed trips)
@@ -161,20 +160,19 @@ The backend follows a clean architecture pattern:
   - Optimal time & zone calculations
   - Session management (start/stop driving)
 
-# Compute Layer (compute module)
-- ComputeService: ML and optimization logic
+**Compute Layer** (compute module)
+- **ComputeService**: ML and optimization logic
   - Optimal time computation
   - Zone score calculations
   - Best zone recommendations
   - All time/zone score generation
 
-# Database Layer (database module)
-- DatabaseManager: Data persistence
+**Database Layer** (database module)
+- **DatabaseManager**: Data persistence
   - SQLite async operations
   - Redis caching and pub/sub
   - Connection pooling
   - Session management
-```
 
 #### API Endpoints Structure
 All endpoints follow RESTful conventions with `/api/v1` prefix:
