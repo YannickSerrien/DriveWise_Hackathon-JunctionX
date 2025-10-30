@@ -44,7 +44,6 @@ coverage/
 *.db
 *.sqlite
 *.sqlite3
-drivewise.db
 
 # Python
 *.egg-info/

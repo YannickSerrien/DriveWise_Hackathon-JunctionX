@@ -143,16 +143,16 @@ DriveWise follows a modern full-stack architecture with three main components:
 ## 🛠 Technology Stack
 
 ### Frontend
-- **Next.js 15.3** - React framework with server-side rendering
-- **React 18.3** - UI component library
+- **Next.js 15.3.3** - React framework with server-side rendering
+- **React 18.3.1** - UI component library
 - **TypeScript 5** - Type-safe JavaScript
-- **Tailwind CSS 3.4** - Utility-first CSS framework
+- **Tailwind CSS 3.4.1** - Utility-first CSS framework
 - **Radix UI** - Accessible component primitives
-- **Genkit 1.20** - Google's AI integration framework
-- **Recharts 2.15** - Charting library for data visualization
-- **Lucide React** - Icon library
-- **React Hook Form** - Form validation
-- **Zod** - Schema validation
+- **Genkit 1.20.0** - Google's AI integration framework
+- **Recharts ^2.15.1** - Charting library for data visualization
+- **Lucide React 0.475.0** - Icon library
+- **React Hook Form 7.54.2** - Form validation
+- **Zod 3.24.2** - Schema validation
 
 ### Backend
 - **Python 3.10+** - Programming language
@@ -178,7 +178,7 @@ DriveWise follows a modern full-stack architecture with three main components:
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js** 20.x or higher ([Download](https://nodejs.org/))
+- **Node.js** 18.x or higher ([Download](https://nodejs.org/))
 - **npm** 9.x or higher (comes with Node.js)
 - **Python** 3.10 or higher ([Download](https://www.python.org/))
 - **pip** (comes with Python)
@@ -188,7 +188,7 @@ Before you begin, ensure you have the following installed:
 ### Verify Installation
 
 ```bash
-node --version  # Should be v20.x or higher
+node --version  # Should be v18.x or higher
 npm --version   # Should be 9.x or higher
 python --version  # Should be 3.10 or higher
 pip --version
