@@ -1,0 +1,12 @@
+
+Dockerfile
+.dockerignore
+node_modules
+.next
+.git
+README.md
+create_archive.sh
+project_archive.tar.gz
+npm-debug.log
+build
+dist
