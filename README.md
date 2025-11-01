@@ -32,7 +32,7 @@
 
 ## 🎯 Overview
 
-**DriveWise** is a hackathon project developed for the JunctionX Uber Challenge that provides an intelligent assistant for ride-sharing drivers. The application combines generative AI, predictive analytics, and real-time data processing to help drivers maximize their earnings, optimize their schedules, and maintain their well-being.
+**DriveWise** is a hackathon project developed for the JunctionX Uber Challenge that provides an intelligent assistant for ride-sharing drivers. The application combines generative AI, predictive analytics, and data-driven optimization to help drivers maximize their earnings, optimize their schedules, and maintain their well-being.
 
 This solution addresses the challenges millions of Uber drivers face daily: navigating cities efficiently, optimizing trip opportunities, balancing work-life wellness, and making data-driven decisions about when and where to drive.
 
@@ -43,7 +43,7 @@ Ride-sharing drivers often struggle with:
 - Managing their work schedule effectively
 - Tracking progress towards incentive bonuses
 - Maintaining work-life balance and wellness
-- Making real-time decisions about trip opportunities
+- Making informed decisions about trip opportunities
 
 ### Our Solution
 
@@ -69,7 +69,7 @@ DriveWise provides:
 - **Historical Data**: Track performance trends over time
 
 ### 🎯 Incentive Management
-- **Progress Tracking**: Monitor real-time progress toward bonus goals
+- **Progress Tracking**: Monitor progress toward bonus goals
 - **Daily Planning**: AI-generated suggestions for achieving incentives
 - **Completion Rate**: Visual indicators of bonus milestone progress
 
@@ -85,7 +85,7 @@ DriveWise provides:
   - Weather conditions
   - Time of day
   - Distance and travel time
-- **Real-Time Recommendations**: Updates suggestions based on current conditions
+- **Real-Time Recommendations**: Provides suggestions based on current conditions
 - **Multi-Factor Scoring**: Considers earnings potential, trip frequency, and driver preferences
 
 ## 🏗 Architecture
@@ -124,7 +124,7 @@ DriveWise follows a modern full-stack architecture with three main components:
 - **Framework**: Next.js 15 with React 18 and TypeScript
 - **UI Library**: Radix UI components with Tailwind CSS
 - **State Management**: React Context API for global state
-- **AI Integration**: Google Genkit for Gemini AI flows
+- **AI Integration**: Google Genkit framework with Gemini 2.5 for server-side AI functionality
 - **Styling**: Tailwind CSS with custom design system
 
 ### Backend Architecture
@@ -133,7 +133,7 @@ DriveWise follows a modern full-stack architecture with three main components:
 - **Graph Processing**: NetworkX for mobility graph analysis
 - **Data Storage**: 
   - SQLite for historical data and ML training
-  - Redis for real-time caching and pub/sub
+  - Redis architecture designed for caching
 - **ML Components**: Weather prediction and demand forecasting
 
 #### Database Models (SQLAlchemy)
@@ -151,7 +151,7 @@ The backend uses 8 database models for comprehensive data management:
 #### Service Layer Architecture
 The backend follows a clean architecture pattern:
 
-**Service Layer** (`service.py` - 870+ lines)
+**Service Layer** (`service.py` - 1,000+ lines)
 - **DataService**: Business logic for all operations
   - Driver management (register, update, get info)
   - Location tracking (coordinates, state history)
@@ -168,16 +168,16 @@ The backend follows a clean architecture pattern:
   - All time/zone score generation
 
 **Database Layer** (database module)
-- **DatabaseManager**: Data persistence
+- **DatabaseManager**: Data persistence architecture
   - SQLite async operations
-  - Redis caching and pub/sub
+  - Redis caching design
   - Connection pooling
   - Session management
 
 #### API Endpoints Structure
 All endpoints follow RESTful conventions with `/api/v1` prefix:
 - **Drivers**: CRUD operations and driver management
-- **Location**: Real-time coordinate updates
+- **Location**: Coordinate updates
 - **Working Hours**: Schedule management
 - **Optimization**: Time and zone recommendations
 - **Trips**: Trip request and completion tracking
@@ -187,7 +187,7 @@ All endpoints follow RESTful conventions with `/api/v1` prefix:
 1. **User Interaction**: Driver interacts with React UI
 2. **API Request**: Frontend sends requests to FastAPI backend
 3. **Business Logic**: Service layer processes requests using compute optimizer
-4. **Data Access**: Database manager handles SQLite/Redis operations
+4. **Data Access**: Database manager handles SQLite operations
 5. **Algorithm Execution**: Dynamic programming optimizer computes recommendations
 6. **Response**: JSON data returned and rendered in UI
 
@@ -212,11 +212,11 @@ All endpoints follow RESTful conventions with `/api/v1` prefix:
 - **NetworkX** - Graph processing and analysis
 - **Pandas** - Data manipulation and analysis
 - **Pydantic** - Data validation
-- **Redis** - In-memory data store for caching
+- **Redis** - In-memory data store architecture for caching
 - **Uvicorn** - ASGI server
 
 ### AI & ML
-- **Google Gemini** - Large language model for chatbot
+- **Google Gemini 2.5** - Large language model for chatbot
 - **Custom ML Models** - Weather prediction and demand forecasting
 - **Dynamic Programming** - Route optimization algorithm
 
@@ -609,7 +609,7 @@ The core of DriveWise's zone recommendation system is a sophisticated dynamic pr
 
 4. **Performance Optimizations**
    - Graph serialization and caching
-   - Redis memoization for repeated queries
+   - Memoization architecture for repeated queries
    - Singleton pattern to prevent graph rebuilding
    - Transition probability pre-computation
 
@@ -837,12 +837,12 @@ The project includes Firebase App Hosting configuration (`apphosting.yaml`) for 
 ### Production Considerations
 
 - **Database**: Replace SQLite with PostgreSQL or Cloud SQL
-- **Redis**: Use Redis Cloud or Cloud Memorystore
+- **Redis**: Use Redis Cloud or Cloud Memorystore for caching implementation
 - **Environment Variables**: Secure all API keys and secrets
 - **CORS**: Update allowed origins in `main.py`
 - **Rate Limiting**: Add API rate limiting for production
 - **Monitoring**: Implement logging and error tracking
-- **Caching**: Configure Redis TTL for production workloads
+- **Caching**: Implement Redis caching for production workloads
 
 ### Archive Creation
 
